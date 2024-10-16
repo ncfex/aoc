@@ -1,22 +1,28 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
-	"strconv"
 )
 
-func processFloor(floors []byte) int {
+func processFloor(floors []byte) (int, int) {
 	currentFloor := 0
-	for _, floor := range floors {
+	firstBasement := 0
+	found := false
+	for i, floor := range floors {
 		if floor&1 == 0 { // ( is ASCII 40, LSB is 0
 			currentFloor++
 		} else {
 			currentFloor--
 		}
+
+		if currentFloor == -1 && !found {
+			firstBasement = i + 1
+		}
 	}
 
-	return currentFloor
+	return currentFloor, firstBasement
 }
 
 func main() {
@@ -25,10 +31,10 @@ func main() {
 		log.Fatal("error reading file:", err)
 	}
 
-	answer := processFloor(inputData)
-	answerStr := strconv.Itoa(answer)
+	answer, firstBasement := processFloor(inputData)
+	output := fmt.Sprintf("%d %d", answer, firstBasement)
 
-	err = os.WriteFile("answer.txt", []byte(answerStr), 0600)
+	err = os.WriteFile("answer-out.txt", []byte(output), 0600)
 	if err != nil {
 		log.Fatal("error writing file:", err)
 	}
