@@ -6,6 +6,19 @@ import (
 	"os"
 )
 
+func movePosition(pos []int, direction string) {
+	switch direction {
+	case "^":
+		pos[0]++
+	case "v":
+		pos[0]--
+	case ">":
+		pos[1]++
+	case "<":
+		pos[1]--
+	}
+}
+
 func main() {
 	content, err := os.ReadFile("input.txt")
 	if err != nil {
@@ -13,28 +26,23 @@ func main() {
 	}
 
 	visitedPositions := make(map[string]int)
-	currentPos := []int{0, 0} // x,y pos
+	currentPos := []int{0, 0}     // x,y pos
+	currentPosRobo := []int{0, 0} // x,y pos
 
 	// init 0,0
-	key := fmt.Sprintf("%d,%d", currentPos[0], currentPos[1])
-	visitedPositions[key]++
+	visitedPositions["0,0"]++
 
 	directions := string(content)
-	for _, dir := range directions {
-		strDir := string(dir)
-		switch strDir {
-		case "^":
-			currentPos[0]++
-		case "v":
-			currentPos[0]--
-		case ">":
-			currentPos[1]++
-		case "<":
-			currentPos[1]--
-		}
+	for i := 0; i < len(directions); i += 2 {
+		// santa
+		movePosition(currentPos, string(directions[i]))
+		visitedPositions[fmt.Sprintf("%d,%d", currentPos[0], currentPos[1])]++
 
-		key := fmt.Sprintf("%d,%d", currentPos[0], currentPos[1])
-		visitedPositions[key]++
+		// robo santa
+		if i+1 < len(directions) {
+			movePosition(currentPosRobo, string(directions[i+1]))
+			visitedPositions[fmt.Sprintf("%d,%d", currentPosRobo[0], currentPosRobo[1])]++
+		}
 	}
 
 	fmt.Println(len(visitedPositions))
