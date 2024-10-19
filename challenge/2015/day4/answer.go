@@ -19,7 +19,7 @@ func main() {
 		}
 
 		hashBytes := h.Sum(nil)
-		if hashBytes[0] == 0 && hashBytes[1] == 0 && (hashBytes[2]>>4) == 0 {
+		if hashBytes[0] == 0 && hashBytes[1] == 0 && hashBytes[2] == 0 {
 			fmt.Printf("Answer: %d\n", number)
 			break
 		}
